@@ -9,5 +9,53 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, error = FALSE)
 ```
 
-## R Markdown
+## Load Libraries
+
+```{r load libraries}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(sf)
+library(tigris)
+options(tigris_class = "sf")
+
+```
+
+## Load the data
+
+```{r}
+homicide <- read_csv("../data/homicide-data.csv")
+homicide <- homicide %>% 
+  unite(city_name, city, state, sep = ", ", remove = TRUE) 
+```
+
+```{r}
+il_counties <- counties(state = "IL", cb = TRUE, class = "sf")
+class(il_counties)
+il_counties %>% 
+  slice(1:3)
+class(il_counties$geometry)
+st_bbox(il_counties$geometry)
+
+ggplot() +
+  geom_sf(data = il_counties)
+
+cook_county <- tracts("IL", county = "cook", cb = TRUE)
+
+#fct_lump n = 3
+
+```
+
+
+
+
+
+## Narrow data to a single city and plot it using sf and tigris
+
+```{r}
+chicago <- homicide %>% 
+  filter(city_name == "Chicago, IL")
+  
+```
 
