@@ -19,6 +19,7 @@ library(ggplot2)
 library(sf)
 library(tigris)
 options(tigris_class = "sf")
+library(scales)
 
 ```
 
@@ -29,6 +30,8 @@ homicide <- read_csv("../data/homicide-data.csv")
 homicide <- homicide %>% 
   unite(city_name, city, state, sep = ", ", remove = TRUE) 
 ```
+
+## Practice with counties using sf and tigris
 
 ```{r}
 il_counties <- counties(state = "IL", cb = TRUE, class = "sf")
@@ -41,12 +44,34 @@ st_bbox(il_counties$geometry)
 ggplot() +
   geom_sf(data = il_counties)
 
+
+
+```
+## Narrowing in on Chicago (Cook County)
+```{r}
+cook <- il_counties %>% 
+  filter(NAME == "Cook")
+cook
+
+
+ggplot() +
+  geom_sf(data = il_counties, color = "lightgray") +
+  geom_sf(data = cook, fill = "darkcyan") +
+  geom_sf_text(data = cook, aes(label = NAME),
+               color = "white",
+               nudge_y = .26) +
+  theme_dark() +
+  labs(x = "", y = "")
+```
+
+
+
+## considering tracts
+```{r}
 cook_county <- tracts("IL", county = "cook", cb = TRUE)
 
 #fct_lump n = 3
-
 ```
-
 
 
 
