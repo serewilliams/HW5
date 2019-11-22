@@ -32,8 +32,7 @@ chicago <- homicide %>%
   filter(city == "Chicago") %>% 
   mutate(victim_race = fct_lump(victim_race, n = 3)) %>% 
   mutate(disposition = as_factor(x = disposition),
-         disposition = fct_recode(.f = disposition,
-                                  solved = "Closed by arrest",
+         disposition = fct_recode(solved = "Closed by arrest",
                                   unsolved = "Closed without arrest",
                                   unsolved = "Open/No arrest"))
 
