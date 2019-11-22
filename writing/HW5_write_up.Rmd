@@ -88,11 +88,14 @@ ggplot() +
 il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
   st_set_crs(4269)
 
+fct_lump(il_point$disposition, n = 3)
+
 ggplot() +
   geom_sf(data = cook_tracts, color = "darkblue") +
   geom_sf(data = ill_point, color = "darkred") +
   theme_dark() +
-  labs(x = "", y = "")
+  labs(x = "", y = "") +
+  facet_wrap(~ disposition)
   
 ```
 
