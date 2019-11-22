@@ -85,11 +85,10 @@ ggplot() +
 ## Making sf object of lat and lon in homicide dataset
 
 ```{r}
-ill_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
+il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
   st_set_crs(4269)
 
 ggplot() +
-  geom_sf(data = cook, fill = "darkcyan") +
   geom_sf(data = cook_tracts, color = "darkblue") +
   geom_sf(data = ill_point, color = "darkred") +
   theme_dark() +
