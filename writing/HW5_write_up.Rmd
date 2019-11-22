@@ -21,15 +21,18 @@ library(tigris)
 options(tigris_class = "sf")
 library(scales)
 library(forcats)
+library(questionr)
 
 ```
 
-## Load the data
+## Load the data, group by Chicago, and lump with n = 3
 
 ```{r}
 homicide <- read_csv("../data/homicide-data.csv")
-homicide <- homicide %>% 
-  unite(city_name, city, state, sep = ", ", remove = TRUE) 
+chicago <- homicide %>% 
+  filter(city == "Chicago") %>% 
+  mutate(victim_race = fct_lump(victim_race, n = 3))
+
 ```
 
 ## Practice with counties using sf and tigris
@@ -88,11 +91,11 @@ ggplot() +
 il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
   st_set_crs(4269)
 
-
+il_point_solved <- rename.variable(il_point$disposition, 'Closed by arrest', 'solved')
 
 ggplot() +
   geom_sf(data = cook_tracts, color = "darkblue") +
-  geom_sf(data = ill_point, aes(color = victim_race)) +
+  geom_sf(data = il_point, aes(color = victim_race), color = cad) +
   theme_dark() +
   labs(x = "", y = "") +
   facet_wrap(~ disposition)
