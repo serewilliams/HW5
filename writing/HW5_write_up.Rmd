@@ -32,9 +32,10 @@ chicago <- homicide %>%
   filter(city == "Chicago") %>% 
   mutate(victim_race = fct_lump(victim_race, n = 3)) %>% 
   mutate(disposition = as_factor(x = disposition),
-         disposition = fct_recode(solved = "Closed by arrest",
-                                  unsolved = "Closed without arrest",
-                                  unsolved = "Open/No arrest"))
+         disposition = fct_recode(.f = disposition,
+                                  Solved = "Closed by arrest",
+                                  Unsolved = "Closed without arrest",
+                                  Unsolved = "Open/No arrest"))
 
 ```
 
@@ -92,10 +93,12 @@ il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
 
 ggplot() +
   geom_sf(data = cook_tracts, color = "darkblue") +
-  geom_sf(data = il_point, aes(color = victim_race)) +
+  geom_sf(data = il_point, aes(color = victim_race, fill = victim_race)) +
   theme_dark() +
   labs(x = "", y = "") +
-  facet_wrap(~ disposition)
+  facet_wrap(~ disposition) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("Homicides in Chicago, IL") 
   
 ```
 
