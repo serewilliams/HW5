@@ -21,7 +21,6 @@ library(tigris)
 options(tigris_class = "sf")
 library(scales)
 library(forcats)
-library(questionr)
 
 ```
 
@@ -31,7 +30,12 @@ library(questionr)
 homicide <- read_csv("../data/homicide-data.csv")
 chicago <- homicide %>% 
   filter(city == "Chicago") %>% 
-  mutate(victim_race = fct_lump(victim_race, n = 3))
+  mutate(victim_race = fct_lump(victim_race, n = 3)) %>% 
+  mutate(disposition = as_factor(x = disposition),
+         disposition = fct_recode(.f = disposition,
+                                  solved = "Closed by arrest",
+                                  unsolved = "Closed without arrest",
+                                  unsolved = "Open/No arrest"))
 
 ```
 
@@ -48,15 +52,12 @@ st_bbox(il_counties$geometry)
 ggplot() +
   geom_sf(data = il_counties)
 
-
-
 ```
 ## Narrowing in on Chicago (Cook County)
 ```{r}
 cook <- il_counties %>% 
   filter(NAME == "Cook")
 cook
-
 
 ggplot() +
   geom_sf(data = il_counties, color = "lightgray") +
@@ -75,7 +76,6 @@ ggplot() +
 cook_tracts <- tracts("IL", county = "cook", cb = TRUE)
 
 ggplot() +
-  geom_sf(data = cook, fill = "darkcyan") +
   geom_sf(data = cook_tracts, color = "darkblue") +
   theme_dark() +
   labs(x = "", y = "")
@@ -91,11 +91,9 @@ ggplot() +
 il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
   st_set_crs(4269)
 
-il_point_solved <- rename.variable(il_point$disposition, 'Closed by arrest', 'solved')
-
 ggplot() +
   geom_sf(data = cook_tracts, color = "darkblue") +
-  geom_sf(data = il_point, aes(color = victim_race), color = cad) +
+  geom_sf(data = il_point, aes(color = victim_race)) +
   theme_dark() +
   labs(x = "", y = "") +
   facet_wrap(~ disposition)
