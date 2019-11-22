@@ -2,7 +2,10 @@
 title: "HW5_write_up"
 author: "Seré Williams"
 date: "11/11/2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
 ---
 
 ```{r global options}
@@ -21,10 +24,9 @@ library(tigris)
 options(tigris_class = "sf")
 library(scales)
 library(forcats)
-
 ```
 
-## Load the data, group by Chicago, and lump with n = 3
+## Load and clean the homicide data. Filter for Chicago and modify victim_race and disposition vectors.
 
 ```{r}
 homicide <- read_csv("../data/homicide-data.csv")
@@ -39,9 +41,9 @@ chicago <- homicide %>%
 
 ```
 
-## Practice with counties using sf and tigris
+## Practice with counties using sf and tigris.
 
-```{r}
+```{r echo = FALSE}
 il_counties <- counties(state = "IL", cb = TRUE, class = "sf")
 class(il_counties)
 il_counties %>% 
@@ -53,7 +55,10 @@ ggplot() +
   geom_sf(data = il_counties)
 
 ```
-## Narrowing in on Chicago (Cook County)
+
+
+## Narrow in on Chicago (Cook County).
+
 ```{r}
 cook <- il_counties %>% 
   filter(NAME == "Cook")
@@ -71,8 +76,8 @@ ggplot() +
 
 
 
-## Considering tracts
-```{r}
+## Consider tracts.
+```{r echo = FALSE}
 cook_tracts <- tracts("IL", county = "cook", cb = TRUE)
 
 ggplot() +
@@ -85,15 +90,16 @@ ggplot() +
 
 
 
-## Making sf object of lat and lon in homicide dataset
+## Making sf object of lat and lon in homicide dataset and create plot.
 
-```{r fig.width=4, fig.height=6}
+```{r fig.width=8, fig.height=12}
 il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
   st_set_crs(4269)
 
 ggplot() +
-  geom_sf(data = cook_tracts, color = "darkblue") +
+  geom_sf(data = cook_tracts, color = "goldenrod2") +
   geom_sf(data = il_point, aes(color = victim_race, fill = victim_race)) +
+  geom_point(alpha = 0.1) +
   theme_dark() +
   labs(x = "", y = "") +
   facet_wrap(~ disposition) +
