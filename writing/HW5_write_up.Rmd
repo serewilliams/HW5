@@ -20,6 +20,7 @@ library(sf)
 library(tigris)
 options(tigris_class = "sf")
 library(scales)
+library(forcats)
 
 ```
 
@@ -66,21 +67,33 @@ ggplot() +
 
 
 
-## considering tracts
+## Considering tracts
 ```{r}
-cook_county <- tracts("IL", county = "cook", cb = TRUE)
+cook_tracts <- tracts("IL", county = "cook", cb = TRUE)
 
-#fct_lump n = 3
+ggplot() +
+  geom_sf(data = cook, fill = "darkcyan") +
+  geom_sf(data = cook_tracts, color = "darkblue") +
+  theme_dark() +
+  labs(x = "", y = "")
+
 ```
 
 
 
 
-## Narrow data to a single city and plot it using sf and tigris
+## Making sf object of lat and lon in homicide dataset
 
 ```{r}
-chicago <- homicide %>% 
-  filter(city_name == "Chicago, IL")
+ill_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
+  st_set_crs(4269)
+
+ggplot() +
+  geom_sf(data = cook, fill = "darkcyan") +
+  geom_sf(data = cook_tracts, color = "darkblue") +
+  geom_sf(data = ill_point, color = "darkred") +
+  theme_dark() +
+  labs(x = "", y = "")
   
 ```
 
