@@ -86,7 +86,7 @@ ggplot() +
 
 ## Making sf object of lat and lon in homicide dataset
 
-```{r}
+```{r fig.width=4, fig.height=6}
 il_point <- st_as_sf(chicago, coords=c("lon", "lat")) %>%
   st_set_crs(4269)
 
